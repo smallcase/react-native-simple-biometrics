@@ -2,7 +2,7 @@
   "name": "react-native-simple-biometrics",
   "title": "React Native Simple Biometrics",
   "version": "1.0.0",
-  "description": "TODO",
+  "description": "Native biometric prompt for ios and android",
   "main": "index.js",
   "files": [
     "README.md",
@@ -16,8 +16,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ananthu.kanive/react-native-simple-biometrics.git",
-    "baseUrl": "https://github.com/ananthu.kanive/react-native-simple-biometrics"
+    "url": "git+https://gitlab.com/smallcase/mobile/react-native-simple-biometrics.git",
+    "baseUrl": "https://gitlab.com/smallcase/mobile/react-native-simple-biometrics"
   },
   "keywords": [
     "react-native"
