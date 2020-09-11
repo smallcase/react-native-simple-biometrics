@@ -6,6 +6,11 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		184832ED250B595C00DE5078 /* RNBiometrics.m in Sources */ = {isa = PBXBuildFile; fileRef = 184832EC250B595C00DE5078 /* RNBiometrics.m */; };
+		184832F0250B5B4500DE5078 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 184832EF250B5B4500DE5078 /* LocalAuthentication.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		58B511D91A9E6C8500147676 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -20,6 +25,9 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNBiometrics.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNBiometrics.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		184832EB250B595B00DE5078 /* RNBiometrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNBiometrics.h; sourceTree = "<group>"; };
+		184832EC250B595C00DE5078 /* RNBiometrics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNBiometrics.m; sourceTree = "<group>"; };
+		184832EF250B5B4500DE5078 /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/LocalAuthentication.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -27,6 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				184832F0250B5B4500DE5078 /* LocalAuthentication.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -41,10 +50,21 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		184832EE250B5B4500DE5078 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				184832EF250B5B4500DE5078 /* LocalAuthentication.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
 				134814211AA4EA7D00B7C361 /* Products */,
+				184832EB250B595B00DE5078 /* RNBiometrics.h */,
+				184832EC250B595C00DE5078 /* RNBiometrics.m */,
+				184832EE250B5B4500DE5078 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -105,6 +125,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				184832ED250B595C00DE5078 /* RNBiometrics.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

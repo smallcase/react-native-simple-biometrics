@@ -8,11 +8,6 @@ const { RNBiometrics: RNBiometricsNative } = NativeModules;
  * @returns {Promise<boolean>} result
  */
 const canAuthenticate = () => {
-  if (Platform.OS === "ios") {
-    // no op for ios
-    return Promise.resolve(true);
-  }
-
   return RNBiometricsNative.canAuthenticate();
 };
 
@@ -27,11 +22,6 @@ const canAuthenticate = () => {
  * @returns {Promise<boolean>} result
  */
 const requestBioAuth = (title, subtitle) => {
-  if (Platform.OS === "ios") {
-    // no op for ios
-    return Promise.resolve(true);
-  }
-
   return RNBiometricsNative.requestBioAuth(title || "", subtitle || "");
 };
 

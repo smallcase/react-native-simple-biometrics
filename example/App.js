@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from 'react';
-import {View, Button, Text} from 'react-native';
+import {View, Button, Text, SafeAreaView} from 'react-native';
 import RNBiometrics from 'react-native-simple-biometrics';
 
 const App = () => {
@@ -19,12 +19,13 @@ const App = () => {
       );
       setAuthenticated(success);
     } catch (err) {
+      console.log(err);
       setAuthenticated(false);
     }
   }, []);
 
   return (
-    <View style={{margin: 16}}>
+    <SafeAreaView style={{margin: 16}}>
       <Button title="check can authenticate" onPress={checkCanAuth} />
       <Text>
         {'can authenticate : '}
@@ -36,7 +37,7 @@ const App = () => {
         {'authenticated : '}
         {authenticated === null ? 'not checked' : authenticated ? 'yes' : 'no'}
       </Text>
-    </View>
+    </SafeAreaView>
   );
 };
 
