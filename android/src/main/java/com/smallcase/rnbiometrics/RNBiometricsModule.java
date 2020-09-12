@@ -8,11 +8,11 @@ import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.UiThreadUtil;
 
 import java.util.concurrent.Executor;
 
@@ -41,44 +41,48 @@ public class RNBiometricsModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void requestBioAuth(String title, String subtitle, final Promise promise) {
-        try {
-            ReactApplicationContext context = getReactApplicationContext();
-            Activity activity = getCurrentActivity();
+    public void requestBioAuth(final String title, final String subtitle, final Promise promise) {
+        UiThreadUtil.runOnUiThread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            ReactApplicationContext context = getReactApplicationContext();
+                            Activity activity = getCurrentActivity();
+                            Executor mainExecutor = ContextCompat.getMainExecutor(context);
+                            final BiometricPrompt.AuthenticationCallback authenticationCallback = new BiometricPrompt.AuthenticationCallback() {
+                                @Override
+                                public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
+                                    super.onAuthenticationError(errorCode, errString);
+                                    promise.reject(new Exception(errString.toString()));
+                                }
 
-            Executor mainExecutor = ContextCompat.getMainExecutor(context);
+                                @Override
+                                public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+                                    super.onAuthenticationSucceeded(result);
+                                    promise.resolve(true);
+                                }
+                            };
 
-            final BiometricPrompt.AuthenticationCallback authenticationCallback = new BiometricPrompt.AuthenticationCallback() {
+                            if (activity != null) {
+                                BiometricPrompt prompt = new BiometricPrompt((FragmentActivity) activity, mainExecutor, authenticationCallback);
 
-                @Override
-                public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
-                    super.onAuthenticationError(errorCode, errString);
-                    promise.reject(new Exception(errString.toString()));
+                                BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                                        .setTitle(title)
+                                        .setSubtitle(subtitle)
+                                        .setDeviceCredentialAllowed(true)
+                                        .build();
+
+                                prompt.authenticate(promptInfo);
+                            } else {
+                                throw new Exception("null activity");
+                            }
+                        } catch (Exception e) {
+                            promise.reject(e);
+                        }
+                    }
                 }
+        );
 
-                @Override
-                public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
-                    super.onAuthenticationSucceeded(result);
-                    promise.resolve(true);
-                }
-            };
-
-            if(activity != null){
-                BiometricPrompt prompt = new BiometricPrompt((FragmentActivity) activity, mainExecutor, authenticationCallback);
-
-                BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                        .setTitle(title)
-                        .setSubtitle(subtitle)
-                        .setDeviceCredentialAllowed(true)
-                        .build();
-
-                prompt.authenticate(promptInfo);
-            } else {
-                throw new Exception("null activity");
-            }
-
-        } catch (Exception e) {
-            promise.reject(e);
-        }
     }
 }
