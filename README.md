@@ -6,6 +6,11 @@ A simple and straight forward API to ask a user to authenticate with on device b
 
 `$ yarn add react-native-simple-biometrics`
 
+## minimum versions
+
+- iOS target: `8.0`
+- Android minSdkVersion: `21`
+
 ## iOS permission
 
 It is required to add an entry in your ios app's `info.plist` giving a valid reason to use the phones face ID system.
@@ -46,4 +51,4 @@ if (can) {
 
 ## credits
 
-[react-native-biometrics](https://www.npmjs.com/package/react-native-biometrics) is a super-set of this library. For more security features (keys, signatures, etc) this this is the package to select.
+[react-native-biometrics](https://www.npmjs.com/package/react-native-biometrics) is a super-set of this library. For more security features (keys, signatures, etc) this react-native-biometrics is the package to select.
