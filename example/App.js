@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from 'react';
-import {View, Button, Text, SafeAreaView} from 'react-native';
+import {Text, SafeAreaView, TouchableOpacity} from 'react-native';
 import RNBiometrics from 'react-native-simple-biometrics';
 
 const App = () => {
@@ -14,8 +14,8 @@ const App = () => {
   const authenticate = useCallback(async () => {
     try {
       const success = await RNBiometrics.requestBioAuth(
-        'title',
-        'subtitle -- ',
+        'Security',
+        'Authenticate to View',
       );
       setAuthenticated(success);
     } catch (err) {
@@ -25,18 +25,31 @@ const App = () => {
   }, []);
 
   return (
-    <SafeAreaView style={{margin: 16}}>
-      <Button title="check can authenticate" onPress={checkCanAuth} />
-      <Text>
-        {'can authenticate : '}
-        {canAuth === null ? 'not checked' : canAuth ? 'yes' : 'no'}
-      </Text>
-      <View style={{height: 16}} />
-      <Button title="authenticate" onPress={authenticate} />
-      <Text>
-        {'authenticated : '}
-        {authenticated === null ? 'not checked' : authenticated ? 'yes' : 'no'}
-      </Text>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        margin: 16,
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+      <TouchableOpacity
+        onPress={authenticate}
+        style={{
+          padding: 16,
+          borderRadius: 8,
+          alignItems: 'center',
+          backgroundColor: '#fa7e61',
+        }}>
+        <Text style={{color: 'white', fontSize: 18, fontWeight: 'bold'}}>
+          Bank Balance
+        </Text>
+        <Text style={{color: '#6F1D1B', padding: 12}}>
+          {authenticated ? '🔓' : '🔒'}
+        </Text>
+        <Text style={{color: '#6F1D1B'}}>
+          {authenticated ? '$1,000,000' : '(tap to unlock)'}
+        </Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

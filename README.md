@@ -2,6 +2,8 @@
 
 A simple and straight forward API to ask a user to authenticate with on device biometrics. This can be used to quickly verify if the app is being used by the owner of the phone (or a trustee) before showing some sensitive info.
 
+![demo](./demo.gif?raw=true "demo")
+
 ## Getting started
 
 `$ yarn add react-native-simple-biometrics`
