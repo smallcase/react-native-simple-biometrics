@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from 'react';
-import {Text, SafeAreaView, TouchableOpacity} from 'react-native';
+import {Text, SafeAreaView, TouchableOpacity, StatusBar} from 'react-native';
 import RNBiometrics from 'react-native-simple-biometrics';
 
 const App = () => {
@@ -28,10 +28,12 @@ const App = () => {
     <SafeAreaView
       style={{
         flex: 1,
-        margin: 16,
+        padding: 16,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: '#5e548e',
       }}>
+      <StatusBar backgroundColor="#fa7e61" />
       <TouchableOpacity
         onPress={authenticate}
         style={{
