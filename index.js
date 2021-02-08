@@ -22,11 +22,11 @@ const canAuthenticate = () => {
  * @returns {Promise<boolean>}
  */
 const requestBioAuth = (promptTitle, promptMessage) => {
-  if (typeof promptTitle !== "string") {
-    throw new Error("prompt title must be a string");
+  if (typeof promptTitle !== "string" || !promptTitle) {
+    throw new Error("prompt title must be a non empty string");
   }
 
-  if (!promptMessage) {
+  if (typeof promptMessage !== "string" || !promptMessage) {
     throw new Error("prompt message must be a non empty string");
   }
 
