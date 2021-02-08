@@ -16,8 +16,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/smallcase/mobile/react-native-simple-biometrics.git",
-    "baseUrl": "https://gitlab.com/smallcase/mobile/react-native-simple-biometrics"
+    "url": "git@github.com:smallcasetech/react-native-simple-biometrics.git",
+    "baseUrl": "https://github.com/smallcasetech/react-native-simple-biometrics"
   },
   "keywords": [
     "react-native"

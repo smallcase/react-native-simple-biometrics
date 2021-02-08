@@ -29,7 +29,7 @@ Calling the authenticate function will automatically ask iOS users for the permi
 Only 2 methods are exposed
 
 - `canAuthenticate()`
-- `requestBioAuth(title: string, subtitle: string)`
+- `requestBioAuth(promptTitle: string, promptMessage: string)`
 
 ```javascript
 import RNBiometrics from "react-native-simple-biometrics";
