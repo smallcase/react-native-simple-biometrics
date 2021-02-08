@@ -17,12 +17,20 @@ const canAuthenticate = () => {
  * note: promise will resolve when successful
  * but will be rejected when not with an error message
  *
- * @param {string} title
- * @param {string} subtitle
- * @returns {Promise<boolean>} result
+ * @param {string} promptTitle - title of prompt (can be empty)
+ * @param {string} promptMessage - The app-provided reason for requesting authentication, which displays in the authentication dialog presented to the user.
+ * @returns {Promise<boolean>}
  */
-const requestBioAuth = (title, subtitle) => {
-  return RNBiometricsNative.requestBioAuth(title || "", subtitle || "");
+const requestBioAuth = (promptTitle, promptMessage) => {
+  if (typeof promptTitle !== "string") {
+    throw new Error("prompt title must be a string");
+  }
+
+  if (!promptMessage) {
+    throw new Error("prompt message must be a non empty string");
+  }
+
+  return RNBiometricsNative.requestBioAuth(promptTitle || "", promptMessage);
 };
 
 const RNBiometrics = {

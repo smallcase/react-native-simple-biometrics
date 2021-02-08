@@ -39,7 +39,7 @@ const can = await RNBiometrics.canAuthenticate();
 
 if (can) {
   try {
-    await RNBiometrics.requestBioAuth("title", "subtitle");
+    await RNBiometrics.requestBioAuth("prompt-title", "prompt-message");
     // stuff to do when authenticated
     // ...
   } catch (error) {
