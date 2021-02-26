@@ -6,9 +6,10 @@
   "main": "index.js",
   "files": [
     "README.md",
-    "android",
-    "index.js",
+    "android/src",
+    "android/build.gradle",
     "ios",
+    "index.js",
     "react-native-simple-biometrics.podspec"
   ],
   "scripts": {
