@@ -17,7 +17,9 @@ import com.facebook.react.bridge.UiThreadUtil;
 import java.util.concurrent.Executor;
 
 public class RNBiometricsModule extends ReactContextBaseJavaModule {
-
+    static final int authenticators =  BiometricManager.Authenticators.BIOMETRIC_STRONG
+            | BiometricManager.Authenticators.BIOMETRIC_WEAK
+            | BiometricManager.Authenticators.DEVICE_CREDENTIAL;
 
     public RNBiometricsModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -33,7 +35,10 @@ public class RNBiometricsModule extends ReactContextBaseJavaModule {
         try {
             ReactApplicationContext context = getReactApplicationContext();
             BiometricManager biometricManager = BiometricManager.from(context);
-            boolean can = biometricManager.canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS;
+
+            int res = biometricManager.canAuthenticate(authenticators);
+            boolean can = res == BiometricManager.BIOMETRIC_SUCCESS;
+
             promise.resolve(can);
         } catch (Exception e) {
             promise.reject(e);
@@ -68,9 +73,9 @@ public class RNBiometricsModule extends ReactContextBaseJavaModule {
                                 BiometricPrompt prompt = new BiometricPrompt((FragmentActivity) activity, mainExecutor, authenticationCallback);
 
                                 BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                                        .setAllowedAuthenticators(authenticators)
                                         .setTitle(title)
                                         .setSubtitle(subtitle)
-                                        .setDeviceCredentialAllowed(true)
                                         .build();
 
                                 prompt.authenticate(promptInfo);
