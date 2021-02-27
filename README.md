@@ -1,5 +1,7 @@
 # React Native Simple Biometrics
 
+![npm](https://img.shields.io/npm/v/react-native-simple-biometrics?color=%231F7AE0)
+
 A simple and straight forward API to ask a user to authenticate with on device biometrics. This can be used to quickly verify if the app is being used by the owner of the phone (or a trustee) before showing some sensitive info.
 
 ![demo](./demo.gif?raw=true "demo")
@@ -53,4 +55,4 @@ if (can) {
 
 ## credits
 
-[react-native-biometrics](https://www.npmjs.com/package/react-native-biometrics) is a super-set of this library. For more security features (keys, signatures, etc) this react-native-biometrics is the package to select.
+[react-native-biometrics](https://www.npmjs.com/package/react-native-biometrics) is a super-set of this library. For more features like keys generation, signatures, etc use react-native-biometrics.
