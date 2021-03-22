@@ -30,7 +30,7 @@ const requestBioAuth = (promptTitle, promptMessage) => {
     throw new Error("prompt message must be a non empty string");
   }
 
-  return RNBiometricsNative.requestBioAuth(promptTitle || "", promptMessage);
+  return RNBiometricsNative.requestBioAuth(promptTitle, promptMessage);
 };
 
 const RNBiometrics = {
