@@ -34,7 +34,12 @@ RCT_REMAP_METHOD(requestBioAuth,
         LAContext *context = [[LAContext alloc] init];
         context.localizedFallbackTitle = title;
         
-        [context evaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics localizedReason:promptMessage reply:^(BOOL success, NSError *biometricError) {
+        LAPolicy localAuthPolicy = LAPolicyDeviceOwnerAuthenticationWithBiometrics;
+        if (![[UIDevice currentDevice].systemVersion hasPrefix:@"8."]) {
+            localAuthPolicy = LAPolicyDeviceOwnerAuthentication;
+        }
+        
+        [context evaluatePolicy:localAuthPolicy localizedReason:promptMessage reply:^(BOOL success, NSError *biometricError) {
             if (success) {
                 resolve( @(YES));
                 
