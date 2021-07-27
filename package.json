@@ -1,7 +1,7 @@
 {
   "name": "react-native-simple-biometrics",
   "title": "React Native Simple Biometrics",
-  "version": "1.4.1",
+  "version": "1.5.0-alpha.0",
   "description": "Native biometric prompt for ios and android",
   "main": "index.js",
   "files": [
