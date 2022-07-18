@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5E555C0D2413F4C50049A1A2 /* SimpleBiometrics.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* SimpleBiometrics.m */; };
+		065A184F288588DC0003B837 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 065A184E288588DC0003B837 /* LocalAuthentication.framework */; };
+		0676F1002885984C00FFDF0F /* SimpleBiometrics.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* SimpleBiometrics.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -23,6 +24,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		065A184E288588DC0003B837 /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk/System/Library/Frameworks/LocalAuthentication.framework; sourceTree = DEVELOPER_DIR; };
 		134814201AA4EA6300B7C361 /* libSimpleBiometrics.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSimpleBiometrics.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3E7B5881CC2AC0600A0062D /* SimpleBiometrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleBiometrics.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* SimpleBiometrics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimpleBiometrics.m; sourceTree = "<group>"; };
@@ -33,12 +35,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				065A184F288588DC0003B837 /* LocalAuthentication.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		065A184D288588DC0003B837 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				065A184E288588DC0003B837 /* LocalAuthentication.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		134814211AA4EA7D00B7C361 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -53,6 +64,7 @@
 				B3E7B5881CC2AC0600A0062D /* SimpleBiometrics.h */,
 				B3E7B5891CC2AC0600A0062D /* SimpleBiometrics.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
+				065A184D288588DC0003B837 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -113,7 +125,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B3E7B58A1CC2AC0600A0062D /* SimpleBiometrics.m in Sources */,
+				0676F1002885984C00FFDF0F /* SimpleBiometrics.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
