@@ -20,11 +20,11 @@ if (isNewArchitectureEnabled()) {
 }
 
 def getExtOrDefault(name) {
-  return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties['Rnbiometrics_' + name]
+  return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties['SimpleBiometrics_' + name]
 }
 
 def getExtOrIntegerDefault(name) {
-  return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties['Rnbiometrics_' + name]).toInteger()
+  return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties['SimpleBiometrics_' + name]).toInteger()
 }
 
 android {
@@ -132,7 +132,7 @@ dependencies {
 if (isNewArchitectureEnabled()) {
   react {
     jsRootDir = file("../src/")
-    libraryName = "Rnbiometrics"
-    codegenJavaPackageName = "com.rnbiometrics"
+    libraryName = "SimpleBiometrics"
+    codegenJavaPackageName = "com.reactnativesimplebiometrics"
   }
 }

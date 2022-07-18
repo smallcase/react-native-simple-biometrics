@@ -1,33 +1,39 @@
-package com.smallcase.rnbiometrics;
+package com.reactnativesimplebiometrics;
 
 import android.app.Activity;
-
 import androidx.annotation.NonNull;
-import androidx.biometric.BiometricManager;
+
+import java.util.concurrent.Executor;
+import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.UiThreadUtil;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.module.annotations.ReactModule;
+
 import androidx.biometric.BiometricPrompt;
+import androidx.biometric.BiometricManager;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import com.facebook.react.bridge.Promise;
-import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.UiThreadUtil;
 
-import java.util.concurrent.Executor;
 
-public class RNBiometricsModule extends ReactContextBaseJavaModule {
+@ReactModule(name = SimpleBiometricsModule.NAME)
+public class SimpleBiometricsModule extends ReactContextBaseJavaModule {
+    public static final String NAME = "RNSimpleBiometrics";
+
     static final int authenticators =  BiometricManager.Authenticators.BIOMETRIC_STRONG
-            | BiometricManager.Authenticators.BIOMETRIC_WEAK
-            | BiometricManager.Authenticators.DEVICE_CREDENTIAL;
+        | BiometricManager.Authenticators.BIOMETRIC_WEAK
+        | BiometricManager.Authenticators.DEVICE_CREDENTIAL;
 
-    public RNBiometricsModule(ReactApplicationContext reactContext) {
+    public SimpleBiometricsModule(ReactApplicationContext reactContext) {
         super(reactContext);
     }
 
     @Override
+    @NonNull
     public String getName() {
-        return "RNBiometrics";
+        return NAME;
     }
 
     @ReactMethod
