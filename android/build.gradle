@@ -125,7 +125,7 @@ repositories {
 dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
-  implementation "androidx.biometric:biometric:1.2.0-alpha04"
+  implementation "androidx.biometric:biometric:1.2.0-alpha05"
   // From node_modules
 }
 
