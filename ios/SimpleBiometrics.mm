@@ -36,7 +36,7 @@ RCT_REMAP_METHOD(requestBioAuth,
         NSString *promptMessage = subtitle;
 
         LAContext *context = [[LAContext alloc] init];
-        context.localizedFallbackTitle = title;
+        context.localizedFallbackTitle = nil;
 
         LAPolicy localAuthPolicy = LAPolicyDeviceOwnerAuthenticationWithBiometrics;
         if (![[UIDevice currentDevice].systemVersion hasPrefix:@"8."]) {
