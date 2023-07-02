@@ -16,7 +16,7 @@ const canAuthenticate = (): Promise<boolean> => {
  * but will be rejected when not with an error message
  */
 const requestBioAuth = (
-  /** title of prompt (can be an empty string) */
+  /** title of prompt */
   promptTitle: string,
   /** The app-provided reason for requesting authentication, which displays in the authentication dialog presented to the user. */
   promptMessage: string
