@@ -2,57 +2,64 @@
 
 ![npm](https://img.shields.io/npm/v/react-native-simple-biometrics?color=%231F7AE0)
 
-A simple and straight forward API to ask a user to authenticate with on device biometrics. This can be used to quickly verify if the app is being used by the owner of the phone (or a trustee) before showing some sensitive info.
+## Overview
+
+React Native Simple Biometrics is a straightforward and minimalistic React Native package designed to provide developers with an API for implementing user authentication using on-device biometrics. This library facilitates the quick verification of the app's user, ensuring that sensitive information is only accessible to authorized individuals, such as the phone owner or a trustee.
 
 ![demo](./demo.gif?raw=true "demo")
 
-## Getting started
+## Installation
 
-`$ yarn add react-native-simple-biometrics`
+To get started with React Native Simple Biometrics, you can add it to your project using Yarn:
 
-## minimum versions
+```bash
+$ yarn add react-native-simple-biometrics
+```
+
+## Minimum Requirements
 
 - iOS target: `8.0`
 - Android minSdkVersion: `21`
 
-## iOS permission
+## iOS Permission
 
-It is required to add an entry in your ios app's `info.plist` giving a valid reason to use the phones face ID system.
+To utilize the Face ID system on iOS devices, it is mandatory to include an entry in your iOS app's `info.plist`, explaining the valid reason for using biometrics:
 
-```
+```xml
 <key>NSFaceIDUsageDescription</key>
 <string>a valid reason to use biometrics</string>
 ```
 
-Calling the authenticate function will automatically ask iOS users for the permission. For more control over when to ask permissions, use [react-native-permissions](https://www.npmjs.com/package/react-native-permissions)
+When you call the `authenticate` function, iOS users will be automatically prompted for permission. For more granular control over when to request permissions, you can utilize the [react-native-permissions](https://www.npmjs.com/package/react-native-permissions) package.
 
 ## Usage
 
-Only 2 methods are exposed
+React Native Simple Biometrics offers two main methods:
 
-- `canAuthenticate()`
-- `requestBioAuth(promptTitle: string, promptMessage: string)`
+1. `canAuthenticate()`: Checks whether the device supports biometric authentication. Returns `true` if the hardware is available or if permission for Face ID (iOS) was granted.
+
+2. `requestBioAuth(promptTitle: string, promptMessage: string)`: Initiates the biometric authentication process, displaying a user-friendly prompt with the specified title and message. This function can be used for user authentication.
+
+Here's a code snippet demonstrating how to use these methods:
 
 ```javascript
 import RNBiometrics from "react-native-simple-biometrics";
 
-// this will be false if
-// - no biometrics hardware
-// - permission was denied for face ID (iOS only)
+// Check if biometric authentication is available
 const can = await RNBiometrics.canAuthenticate();
 
 if (can) {
   try {
     await RNBiometrics.requestBioAuth("prompt-title", "prompt-message");
-    // stuff to do when authenticated
+    // Code to execute when authenticated
     // ...
   } catch (error) {
-    // stuff to do when auth failed
+    // Code to handle authentication failure
     // ...
   }
 }
 ```
 
-## credits
+## Credits
 
-[react-native-biometrics](https://www.npmjs.com/package/react-native-biometrics) is a super-set of this library. For more features like keys generation, signatures, etc use react-native-biometrics.
+React Native Simple Biometrics is a simplified version of [react-native-biometrics](https://www.npmjs.com/package/react-native-biometrics). If you require advanced features such as key generation, signatures, and more, consider using react-native-biometrics.
