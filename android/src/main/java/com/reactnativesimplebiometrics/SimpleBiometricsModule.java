@@ -1,6 +1,7 @@
 package com.reactnativesimplebiometrics;
 
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import androidx.annotation.NonNull;
 
 import java.util.concurrent.Executor;
@@ -15,8 +16,6 @@ import androidx.biometric.BiometricPrompt;
 import androidx.biometric.BiometricManager;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
-
-
 
 @ReactModule(name = SimpleBiometricsModule.NAME)
 public class SimpleBiometricsModule extends ReactContextBaseJavaModule {
@@ -95,5 +94,23 @@ public class SimpleBiometricsModule extends ReactContextBaseJavaModule {
                 }
         );
 
+    }
+
+    @ReactMethod
+    public void getBiometryType(Promise promise) {
+        try {
+            ReactApplicationContext context = getReactApplicationContext();
+            PackageManager pm = context.getPackageManager();
+
+            if (pm.hasSystemFeature(PackageManager.FEATURE_FINGERPRINT)) {
+                promise.resolve("Fingerprint");
+            } else if (pm.hasSystemFeature(PackageManager.FEATURE_FACE)) {
+                promise.resolve("Face");
+            } else {
+                promise.resolve("Unknown");
+            }
+        } catch (Exception e) {
+            promise.reject(e);
+        }
     }
 }

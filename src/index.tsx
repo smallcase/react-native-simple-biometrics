@@ -32,9 +32,19 @@ const requestBioAuth = (
   return RNBiometricsNative.requestBioAuth(promptTitle, promptMessage);
 };
 
+/**
+ * Get the type of biometric authentication available on the device
+ */
+const getBiometryType = (): Promise<
+  'Fingerprint' | 'Face' | 'None' | 'Unknown'
+> => {
+  return RNBiometricsNative.getBiometryType();
+};
+
 const RNBiometrics = {
   requestBioAuth,
   canAuthenticate,
+  getBiometryType, // Added new method here
 };
 
 export default RNBiometrics;
