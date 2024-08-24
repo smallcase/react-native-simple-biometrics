@@ -107,10 +107,10 @@ public class SimpleBiometricsModule extends ReactContextBaseJavaModule {
             } else if (pm.hasSystemFeature(PackageManager.FEATURE_FACE)) {
                 promise.resolve("Face");
             } else {
-                promise.resolve("Unknown");
+                promise.resolve("None");
             }
         } catch (Exception e) {
-            promise.reject(e);
+            promise.resolve("Unknown")
         }
     }
 }

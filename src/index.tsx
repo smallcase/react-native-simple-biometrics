@@ -44,7 +44,7 @@ const getBiometryType = (): Promise<
 const RNBiometrics = {
   requestBioAuth,
   canAuthenticate,
-  getBiometryType, // Added new method here
+  getBiometryType,
 };
 
 export default RNBiometrics;
