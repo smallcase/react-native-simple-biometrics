@@ -110,7 +110,7 @@ public class SimpleBiometricsModule extends ReactContextBaseJavaModule {
                 promise.resolve("None");
             }
         } catch (Exception e) {
-            promise.resolve("Unknown")
+            promise.resolve("Unknown");
         }
     }
 }
