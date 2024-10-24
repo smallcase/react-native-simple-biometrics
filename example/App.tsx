@@ -10,11 +10,20 @@ import RNBiometrics from 'react-native-simple-biometrics';
 
 const App = () => {
   const [canAuth, setCanAuth] = useState(false);
+  const [type, setType] = useState('');
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
     RNBiometrics.canAuthenticate().then(setCanAuth);
   }, []);
+
+  useEffect(() => {
+    if (!canAuth) {
+      setType('Unknown');
+      return;
+    }
+    RNBiometrics.getBiometryType().then(setType);
+  }, [canAuth]);
 
   const authenticate = useCallback(async () => {
     try {
@@ -40,7 +49,7 @@ const App = () => {
               {authenticated ? '🔓' : '🔒'}
             </Text>
             <Text style={styles.subtitle}>
-              {authenticated ? '$1,000,000' : '(tap to unlock)'}
+              {authenticated ? '$1,000,000' : `(tap to unlock using ${type})`}
             </Text>
           </>
         ) : (

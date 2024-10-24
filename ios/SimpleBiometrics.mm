@@ -56,6 +56,34 @@ RCT_REMAP_METHOD(requestBioAuth,
 
 }
 
+RCT_REMAP_METHOD(getBiometryType,
+                 getBiometryTypeWithResolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject)
+{
+    LAContext *context = [[LAContext alloc] init];
+    NSError *la_error = nil;
+
+    // Check if the device can evaluate a biometric policy
+    if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&la_error]) {
+        if (@available(iOS 11.0, *)) {
+            // iOS 11+ supports biometryType property
+            if (context.biometryType == LABiometryTypeFaceID) {
+                resolve(@"FaceID");
+            } else if (context.biometryType == LABiometryTypeTouchID) {
+                resolve(@"TouchID");
+            } else {
+                resolve(@"None");
+            }
+        } else {
+            // Fallback for iOS versions earlier than 11.0
+            resolve(@"Unknown");
+        }
+    } else {
+        // Handle the error case where biometric authentication is not available
+        resolve(@"None");
+    }
+}
+
 // Don't compile this code when we build for the old architecture.
 #ifdef RCT_NEW_ARCH_ENABLED
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
