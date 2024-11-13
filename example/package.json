@@ -1,33 +1,36 @@
 {
-  "name": "BiometricExample",
+  "name": "react-native-simple-biometrics-example",
   "version": "0.0.1",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
+    "build:android": "npm run mkdist && react-native bundle --entry-file index.js --platform android --dev true --bundle-output dist/main.android.jsbundle --assets-dest dist && react-native build-android --extra-params \"--no-daemon --console=plain -PreactNativeArchitectures=arm64-v8a\"",
+    "build:ios": "npm run mkdist && react-native bundle --entry-file index.js --platform ios --dev true --bundle-output dist/main.ios.jsbundle --assets-dest dist && react-native build-ios --scheme SimpleBiometricsExample --mode Debug --extra-params \"-sdk iphonesimulator CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++ GCC_OPTIMIZATION_LEVEL=0 GCC_PRECOMPILE_PREFIX_HEADER=YES ASSETCATALOG_COMPILER_OPTIMIZATION=time DEBUG_INFORMATION_FORMAT=dwarf COMPILER_INDEX_STORE_ENABLE=NO\"",
     "ios": "react-native run-ios",
+    "mkdist": "node -e \"require('node:fs').mkdirSync('dist', { recursive: true, mode: 0o755 })\"",
     "start": "react-native start",
-    "pods": "pod-install --quiet",
-    "postinstall": "patch-package"
+    "clean": "react-native-clean-project"
   },
   "dependencies": {
-    "react": "18.2.0",
-    "react-native": "0.72.1"
+    "react": "18.3.1",
+    "react-native": "0.76.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0",
-    "@babel/preset-env": "^7.20.0",
-    "@babel/runtime": "^7.20.0",
-    "@react-native/metro-config": "^0.72.7",
-    "@tsconfig/react-native": "^3.0.0",
-    "@types/metro-config": "^0.76.3",
-    "@types/react": "^18.0.24",
-    "metro-react-native-babel-preset": "0.76.5",
-    "typescript": "4.8.4",
-    "babel-plugin-module-resolver": "^4.1.0",
-    "patch-package": "^6.4.7",
-    "postinstall-postinstall": "^2.1.0"
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.3",
+    "@babel/runtime": "^7.25.0",
+    "@react-native-community/cli": "15.0.0",
+    "@react-native-community/cli-platform-android": "15.0.0",
+    "@react-native-community/cli-platform-ios": "15.0.0",
+    "@react-native/babel-preset": "0.76.1",
+    "@react-native/metro-config": "0.76.1",
+    "@react-native/typescript-config": "0.76.1",
+    "@rnx-kit/metro-config": "^2.0.0",
+    "react-native-builder-bob": "^0.31.0",
+    "react-native-clean-project": "^4.0.3",
+    "react-native-test-app": "^4.0.1"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   }
 }

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   Text,
   SafeAreaView,
@@ -13,7 +13,22 @@ const App = () => {
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
-    RNBiometrics.canAuthenticate().then(setCanAuth);
+    RNBiometrics.checkCapability()
+      .then((res) => {
+        console.log('checkCapability', res);
+        setCanAuth(res.canAuthenticate);
+      })
+      .catch((err) => {
+        console.log('checkCapability err', err);
+      });
+
+    RNBiometrics.canAuthenticate()
+      .then((res) => {
+        console.log('canAuthenticate', res);
+      })
+      .catch((err) => {
+        console.log('canAuthenticate err', err);
+      });
   }, []);
 
   const authenticate = useCallback(async () => {
