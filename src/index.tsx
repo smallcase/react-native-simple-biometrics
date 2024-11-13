@@ -1,12 +1,46 @@
-import { NativeModules } from 'react-native';
+import { NativeModules, Platform } from 'react-native';
 
-const { SimpleBiometrics: RNBiometricsNative } = NativeModules;
+const LINKING_ERROR =
+  `The package 'react-native-simple-biometrics' doesn't seem to be linked. Make sure: \n\n` +
+  Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
+  '- You rebuilt the app after installing the package\n' +
+  '- You are not using Expo Go\n';
+
+// @ts-expect-error
+const isTurboModuleEnabled = global.__turboModuleProxy != null;
+
+const SimpleBiometricsModule = isTurboModuleEnabled
+  ? require('./NativeSimpleBiometrics').default
+  : NativeModules.SimpleBiometrics;
+
+const RNBiometricsNative = SimpleBiometricsModule
+  ? SimpleBiometricsModule
+  : new Proxy(
+      {},
+      {
+        get() {
+          throw new Error(LINKING_ERROR);
+        },
+      }
+    );
 
 /**
+ * @deprecated - use checkCapability()
+ *
  * check if authentication is possible
  */
 const canAuthenticate = (): Promise<boolean> => {
   return RNBiometricsNative.canAuthenticate();
+};
+
+/**
+ * check if authentication is possible
+ */
+const checkCapability = (): Promise<{
+  canAuthenticate: boolean;
+  errorReason: string;
+}> => {
+  return RNBiometricsNative.checkCapability();
 };
 
 /**
@@ -34,6 +68,7 @@ const requestBioAuth = (
 
 const RNBiometrics = {
   requestBioAuth,
+  checkCapability,
   canAuthenticate,
 };
 
