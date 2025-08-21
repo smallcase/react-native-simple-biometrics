@@ -2,11 +2,22 @@ import { NativeModules } from 'react-native';
 
 const { SimpleBiometrics: RNBiometricsNative } = NativeModules;
 
+type CanAuthenticateOptions = {
+  /**
+   * If biometrics is not available, use device credentials
+   */
+  allowDeviceCredentials: boolean;
+};
+
 /**
  * check if authentication is possible
  */
-const canAuthenticate = (): Promise<boolean> => {
-  return RNBiometricsNative.canAuthenticate();
+const canAuthenticate = (
+  options?: CanAuthenticateOptions
+): Promise<boolean> => {
+  const { allowDeviceCredentials = false } = options ?? {};
+
+  return RNBiometricsNative.canAuthenticate(allowDeviceCredentials);
 };
 
 /**
