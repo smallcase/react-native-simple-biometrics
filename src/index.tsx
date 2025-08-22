@@ -2,7 +2,7 @@ import { NativeModules } from 'react-native';
 
 const { SimpleBiometrics: RNBiometricsNative } = NativeModules;
 
-type CanAuthenticateOptions = {
+type Options = {
   /**
    * If biometrics is not available, use device credentials
    */
@@ -12,9 +12,7 @@ type CanAuthenticateOptions = {
 /**
  * check if authentication is possible
  */
-const canAuthenticate = (
-  options?: CanAuthenticateOptions
-): Promise<boolean> => {
+const canAuthenticate = (options?: Options): Promise<boolean> => {
   const { allowDeviceCredentials = false } = options ?? {};
 
   return RNBiometricsNative.canAuthenticate(allowDeviceCredentials);
@@ -30,7 +28,8 @@ const requestBioAuth = (
   /** title of prompt */
   promptTitle: string,
   /** The app-provided reason for requesting authentication, which displays in the authentication dialog presented to the user. */
-  promptMessage: string
+  promptMessage: string,
+  options?: Options
 ): Promise<boolean> => {
   if (typeof promptTitle !== 'string' || !promptTitle) {
     throw new Error('prompt title must be a non empty string');
@@ -40,7 +39,13 @@ const requestBioAuth = (
     throw new Error('prompt message must be a non empty string');
   }
 
-  return RNBiometricsNative.requestBioAuth(promptTitle, promptMessage);
+  const { allowDeviceCredentials = false } = options ?? {};
+
+  return RNBiometricsNative.requestBioAuth(
+    promptTitle,
+    promptMessage,
+    allowDeviceCredentials
+  );
 };
 
 const RNBiometrics = {
