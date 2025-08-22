@@ -10,6 +10,27 @@
 @implementation SimpleBiometrics
 RCT_EXPORT_MODULE()
 
+- (LAPolicy)getLocalAuthPolicy:(BOOL)allowDeviceCredentials {
+  if (allowDeviceCredentials) {
+    // If not iOS 8.x, then it's safe to use DeviceOwnerAuthentication (iOS 9+)
+    if (![[[UIDevice currentDevice] systemVersion] hasPrefix:@"8."]) {
+      // LAPolicyDeviceOwnerAuthentication allows authentication using
+      // biometrics (Face ID/Touch ID) or device passcode.
+      // If biometry is available, enrolled, and not disabled, the system
+      // uses that first. When these options aren’t available, the system
+      // prompts the user for the device passcode or user’s password.
+      return LAPolicyDeviceOwnerAuthentication;
+    } else {
+      // On iOS 8, fall back to biometrics only
+      return LAPolicyDeviceOwnerAuthenticationWithBiometrics;
+    }
+  } else {
+    // LAPolicyDeviceOwnerAuthenticationWithBiometrics policy evaluation
+    // fails if Touch ID or Face ID is unavailable or not enrolled.
+    return LAPolicyDeviceOwnerAuthenticationWithBiometrics;
+  }
+}
+
 RCT_REMAP_METHOD(canAuthenticate, allowDeviceCredentials
                  : (BOOL)allowDeviceCredentials canAuthenticateWithResolver
                  : (RCTPromiseResolveBlock)resolve rejecter
@@ -17,17 +38,7 @@ RCT_REMAP_METHOD(canAuthenticate, allowDeviceCredentials
   LAContext *context = [[LAContext alloc] init];
   NSError *la_error = nil;
 
-  LAPolicy localAuthPolicy =
-      allowDeviceCredentials
-          // LAPolicyDeviceOwnerAuthentication allows authentication using
-          // biometrics (Face ID/Touch ID) or device passcode.
-          // If biometry is available, enrolled, and not disabled, the system
-          // uses that first. When these options aren’t available, the system
-          // prompts the user for the device passcode or user’s password.
-          ? LAPolicyDeviceOwnerAuthentication
-          // LAPolicyDeviceOwnerAuthenticationWithBiometrics policy evaluation
-          // fails if Touch ID or Face ID is unavailable or not enrolled.
-          : LAPolicyDeviceOwnerAuthenticationWithBiometrics;
+  LAPolicy localAuthPolicy = [self getLocalAuthPolicy:allowDeviceCredentials];
 
   BOOL canEvaluatePolicy = [context canEvaluatePolicy:localAuthPolicy
                                                 error:&la_error];
@@ -41,7 +52,8 @@ RCT_REMAP_METHOD(canAuthenticate, allowDeviceCredentials
 
 RCT_REMAP_METHOD(requestBioAuth, title
                  : (NSString *)title subtitle
-                 : (NSString *)subtitle requestBioAuthWithResolver
+                 : (NSString *)subtitle allowDeviceCredentials
+                 : (BOOL)allowDeviceCredentials requestBioAuthWithResolver
                  : (RCTPromiseResolveBlock)resolve rejecter
                  : (RCTPromiseRejectBlock)reject) {
 
@@ -53,10 +65,7 @@ RCT_REMAP_METHOD(requestBioAuth, title
         context.localizedFallbackTitle = nil;
 
         LAPolicy localAuthPolicy =
-            LAPolicyDeviceOwnerAuthenticationWithBiometrics;
-        if (![[UIDevice currentDevice].systemVersion hasPrefix:@"8."]) {
-          localAuthPolicy = LAPolicyDeviceOwnerAuthentication;
-        }
+            [self getLocalAuthPolicy:allowDeviceCredentials];
 
         [context evaluatePolicy:localAuthPolicy
                 localizedReason:promptMessage
