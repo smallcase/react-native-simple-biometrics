@@ -1,9 +1,12 @@
 package com.reactnativesimplebiometrics;
 
 import android.app.Activity;
+import android.os.Build;
+
 import androidx.annotation.NonNull;
 
 import java.util.concurrent.Executor;
+
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.UiThreadUtil;
@@ -16,15 +19,9 @@ import androidx.biometric.BiometricManager;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-
-
 @ReactModule(name = SimpleBiometricsModule.NAME)
 public class SimpleBiometricsModule extends ReactContextBaseJavaModule {
     public static final String NAME = "SimpleBiometrics";
-
-    static final int authenticators =  BiometricManager.Authenticators.BIOMETRIC_STRONG
-        | BiometricManager.Authenticators.BIOMETRIC_WEAK
-        | BiometricManager.Authenticators.DEVICE_CREDENTIAL;
 
     public SimpleBiometricsModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -36,12 +33,28 @@ public class SimpleBiometricsModule extends ReactContextBaseJavaModule {
         return NAME;
     }
 
+    /**
+     * Helper to choose allowed authenticators depending on API level and JS param.
+     */
+    private int getAllowedAuthenticators(boolean allowDeviceCredentials) {
+        if (allowDeviceCredentials && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // API 30+ supports DEVICE_CREDENTIAL fallback
+            return BiometricManager.Authenticators.BIOMETRIC_STRONG |
+                    BiometricManager.Authenticators.BIOMETRIC_WEAK |
+                    BiometricManager.Authenticators.DEVICE_CREDENTIAL;
+        }
+        // Default to biometrics
+        return BiometricManager.Authenticators.BIOMETRIC_STRONG |
+                BiometricManager.Authenticators.BIOMETRIC_WEAK;
+    }
+
     @ReactMethod
-    public void canAuthenticate(Promise promise) {
+    public void canAuthenticate(boolean allowDeviceCredentials, Promise promise) {
         try {
             ReactApplicationContext context = getReactApplicationContext();
             BiometricManager biometricManager = BiometricManager.from(context);
 
+            int authenticators = getAllowedAuthenticators(allowDeviceCredentials);
             int res = biometricManager.canAuthenticate(authenticators);
             boolean can = res == BiometricManager.BIOMETRIC_SUCCESS;
 
@@ -52,7 +65,8 @@ public class SimpleBiometricsModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void requestBioAuth(final String title, final String subtitle, final Promise promise) {
+    public void requestBioAuth(final String title, final String subtitle, final boolean allowDeviceCredentials,
+            final Promise promise) {
         UiThreadUtil.runOnUiThread(
                 new Runnable() {
                     @Override
@@ -69,15 +83,18 @@ public class SimpleBiometricsModule extends ReactContextBaseJavaModule {
                                 }
 
                                 @Override
-                                public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+                                public void onAuthenticationSucceeded(
+                                        @NonNull BiometricPrompt.AuthenticationResult result) {
                                     super.onAuthenticationSucceeded(result);
                                     promise.resolve(true);
                                 }
                             };
 
                             if (activity != null) {
-                                BiometricPrompt prompt = new BiometricPrompt((FragmentActivity) activity, mainExecutor, authenticationCallback);
+                                BiometricPrompt prompt = new BiometricPrompt((FragmentActivity) activity, mainExecutor,
+                                        authenticationCallback);
 
+                                int authenticators = getAllowedAuthenticators(allowDeviceCredentials);
                                 BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
                                         .setAllowedAuthenticators(authenticators)
                                         .setTitle(title)
@@ -92,8 +109,7 @@ public class SimpleBiometricsModule extends ReactContextBaseJavaModule {
                             promise.reject(e);
                         }
                     }
-                }
-        );
+                });
 
     }
 }
