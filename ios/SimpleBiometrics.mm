@@ -12,18 +12,12 @@ RCT_EXPORT_MODULE()
 
 - (LAPolicy)getLocalAuthPolicy:(BOOL)allowDeviceCredentials {
   if (allowDeviceCredentials) {
-    // If not iOS 8.x, then it's safe to use DeviceOwnerAuthentication (iOS 9+)
-    if (![[[UIDevice currentDevice] systemVersion] hasPrefix:@"8."]) {
-      // LAPolicyDeviceOwnerAuthentication allows authentication using
-      // biometrics (Face ID/Touch ID) or device passcode.
-      // If biometry is available, enrolled, and not disabled, the system
-      // uses that first. When these options aren’t available, the system
-      // prompts the user for the device passcode or user’s password.
-      return LAPolicyDeviceOwnerAuthentication;
-    } else {
-      // On iOS 8, fall back to biometrics only
-      return LAPolicyDeviceOwnerAuthenticationWithBiometrics;
-    }
+    // LAPolicyDeviceOwnerAuthentication allows authentication using
+    // biometrics (Face ID/Touch ID) or device passcode.
+    // If biometry is available, enrolled, and not disabled, the system
+    // uses that first. When these options aren’t available, the system
+    // prompts the user for the device passcode or user’s password.
+    return LAPolicyDeviceOwnerAuthentication;
   } else {
     // LAPolicyDeviceOwnerAuthenticationWithBiometrics policy evaluation
     // fails if Touch ID or Face ID is unavailable or not enrolled.
