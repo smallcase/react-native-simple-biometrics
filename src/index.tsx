@@ -13,7 +13,7 @@ type Options = {
  * check if authentication is possible
  */
 const canAuthenticate = (options?: Options): Promise<boolean> => {
-  const { allowDeviceCredentials = false } = options ?? {};
+  const { allowDeviceCredentials = true } = options ?? {};
 
   return RNBiometricsNative.canAuthenticate(allowDeviceCredentials);
 };
@@ -39,7 +39,7 @@ const requestBioAuth = (
     throw new Error('prompt message must be a non empty string');
   }
 
-  const { allowDeviceCredentials = false } = options ?? {};
+  const { allowDeviceCredentials = true } = options ?? {};
 
   return RNBiometricsNative.requestBioAuth(
     promptTitle,
