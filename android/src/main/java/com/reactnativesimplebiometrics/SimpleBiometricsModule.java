@@ -1,7 +1,6 @@
 package com.reactnativesimplebiometrics;
 
 import android.app.Activity;
-import android.os.Build;
 
 import androidx.annotation.NonNull;
 
@@ -37,13 +36,12 @@ public class SimpleBiometricsModule extends ReactContextBaseJavaModule {
      * Helper to choose allowed authenticators depending on API level and JS param.
      */
     private int getAllowedAuthenticators(boolean allowDeviceCredentials) {
-        if (allowDeviceCredentials && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // API 30+ supports DEVICE_CREDENTIAL fallback
+        if (allowDeviceCredentials) {
             return BiometricManager.Authenticators.BIOMETRIC_STRONG |
                     BiometricManager.Authenticators.BIOMETRIC_WEAK |
                     BiometricManager.Authenticators.DEVICE_CREDENTIAL;
         }
-        // Default to biometrics
+        // Default to biometrics only
         return BiometricManager.Authenticators.BIOMETRIC_STRONG |
                 BiometricManager.Authenticators.BIOMETRIC_WEAK;
     }
