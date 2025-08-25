@@ -6,7 +6,7 @@
 
 React Native Simple Biometrics is a straightforward and minimalistic React Native package designed to provide developers with an API for implementing user authentication using on-device biometrics. This library facilitates the quick verification of the app's user, ensuring that sensitive information is only accessible to authorized individuals, such as the phone owner or a trustee.
 
-![demo](./demo.gif?raw=true "demo")
+![demo](./demo.gif?raw=true 'demo')
 
 ## Installation
 
@@ -18,7 +18,7 @@ $ yarn add react-native-simple-biometrics
 
 ## Minimum Requirements
 
-- iOS target: `8.0`
+- iOS target: `10.0`
 - Android minSdkVersion: `21`
 
 ## iOS Permission
@@ -36,21 +36,55 @@ When you call the `authenticate` function, iOS users will be automatically promp
 
 React Native Simple Biometrics offers two main methods:
 
-1. `canAuthenticate()`: Checks whether the device supports biometric authentication. Returns `true` if the hardware is available or if permission for Face ID (iOS) was granted.
+1. `canAuthenticate(options?: Options)`: Checks whether the device supports biometric authentication. Returns `true` if the hardware is available or if permission for Face ID (iOS) was granted.
 
-2. `requestBioAuth(promptTitle: string, promptMessage: string)`: Initiates the biometric authentication process, displaying a user-friendly prompt with the specified title and message. This function can be used for user authentication.
+Parameters
+
+- `options` (optional): An object containing configuration options
+  - `allowDeviceCredentials` (boolean, default: true): Whether to allow device credentials (passcode/password) as a fallback when biometric authentication is not available
+
+Return Value
+
+Returns a Promise<boolean> that resolves to:
+
+- true if authentication is possible with the specified options
+- false if authentication is not possible
+
+2. `requestBioAuth(promptTitle: string, promptMessage: string, options?: Options)`: Initiates the biometric authentication process, displaying a user-friendly prompt with the specified title and message. This function can be used for user authentication.
+
+Required Parameters
+
+- `promptTitle` (string): The title displayed in the authentication dialog
+  Must be a non-empty string
+  Throws an error if not provided or empty
+- `promptMessage` (string): The subtitle/reason for requesting authentication
+  Must be a non-empty string
+  Throws an error if not provided or empty
+  Displays in the authentication dialog to explain why authentication is needed
+
+Optional Parameters
+
+- `options` (object, optional): Configuration options
+  - `allowDeviceCredentials` (boolean, default: true): Whether to allow device credentials (passcode/password) as a fallback when biometric authentication is not available
+
+Return Value
+
+Returns a Promise<boolean> that:
+
+- Resolves to true when authentication is successful
+- Rejects with an error when authentication fails or is cancelled
 
 Here's a code snippet demonstrating how to use these methods:
 
 ```javascript
-import RNBiometrics from "react-native-simple-biometrics";
+import RNBiometrics from 'react-native-simple-biometrics';
 
-// Check if biometric authentication is available
+// Check if biometric authentication is available, will fallback to device passcode by default if not
 const can = await RNBiometrics.canAuthenticate();
 
 if (can) {
   try {
-    await RNBiometrics.requestBioAuth("prompt-title", "prompt-message");
+    await RNBiometrics.requestBioAuth('prompt-title', 'prompt-message');
     // Code to execute when authenticated
     // ...
   } catch (error) {
