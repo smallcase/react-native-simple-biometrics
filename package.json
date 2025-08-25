@@ -1,6 +1,6 @@
 {
   "name": "react-native-simple-biometrics",
-  "version": "1.5.3",
+  "version": "1.6.0",
   "description": "test",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
