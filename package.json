@@ -1,6 +1,6 @@
 {
   "name": "react-native-simple-biometrics",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "description": "simple interface to verify user authenticity using on-device biometrics",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
