@@ -10,10 +10,22 @@ React Native Simple Biometrics is a straightforward and minimalistic React Nativ
 
 ## Installation
 
-To get started with React Native Simple Biometrics, you can add it to your project using Yarn:
+```bash
+# Using npm
+$ npm install react-native-simple-biometrics
+
+# Using Yarn
+$ yarn add react-native-simple-biometrics
+```
+
+**Important:** Version 3+ of this library requires React Native's New Architecture (Fabric/TurboModules). If you're using React Native's Old Architecture, please use version 2 or below:
 
 ```bash
-$ yarn add react-native-simple-biometrics
+# For Old Architecture (React Native < 0.68 or without New Architecture enabled)
+$ npm install react-native-simple-biometrics@^2.0.0
+
+# or
+$ yarn add react-native-simple-biometrics@^2.0.0
 ```
 
 ## Minimum Requirements
