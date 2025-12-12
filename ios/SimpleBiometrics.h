@@ -1,5 +1,5 @@
-#import <React/RCTBridgeModule.h>
+#import <SimpleBiometricsSpec/SimpleBiometricsSpec.h>
 
-@interface SimpleBiometrics : NSObject <RCTBridgeModule>
+@interface SimpleBiometrics : NSObject <NativeSimpleBiometricsSpec>
 
 @end

@@ -1,6 +1,4 @@
-import { NativeModules } from 'react-native';
-
-const { SimpleBiometrics: RNBiometricsNative } = NativeModules;
+import SimpleBiometrics from './NativeSimpleBiometrics';
 
 type Options = {
   /**
@@ -15,7 +13,7 @@ type Options = {
 const canAuthenticate = (options?: Options): Promise<boolean> => {
   const { allowDeviceCredentials = true } = options ?? {};
 
-  return RNBiometricsNative.canAuthenticate(allowDeviceCredentials);
+  return SimpleBiometrics.canAuthenticate(allowDeviceCredentials);
 };
 
 /**
@@ -41,7 +39,7 @@ const requestBioAuth = (
 
   const { allowDeviceCredentials = true } = options ?? {};
 
-  return RNBiometricsNative.requestBioAuth(
+  return SimpleBiometrics.requestBioAuth(
     promptTitle,
     promptMessage,
     allowDeviceCredentials
