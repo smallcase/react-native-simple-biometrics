@@ -1,4 +1,11 @@
 import SimpleBiometrics from './NativeSimpleBiometrics';
+import type {
+  CreateKeysResult,
+  CreateSignatureResult,
+} from './NativeSimpleBiometrics';
+
+export type BiometricKey = CreateKeysResult;
+export type Signature = CreateSignatureResult;
 
 export type Options = {
   /**
@@ -28,6 +35,27 @@ export type BioAuthRequest = {
    * @default 'Cancel'
    */
   cancelLabel?: string;
+};
+
+type KeyOptions = {
+  /**
+   * Identifier for this key pair. Allows multiple keys for different purposes.
+   * @default 'default'
+   */
+  keyName?: string;
+};
+
+type SigningOptions = {
+  /**
+   * Identifier for the key pair used to sign.
+   * @default 'default'
+   */
+  keyName?: string;
+  /**
+   * Reason shown in the biometric prompt.
+   * @default 'Authenticate to sign'
+   */
+  promptMessage?: string;
 };
 
 /**
@@ -102,9 +130,64 @@ function requestBioAuth(
   );
 }
 
+/**
+ * create a biometric protected key pair
+ *
+ * note: promise will resolve with the generated public key
+ * but will be rejected if a key with the given key name already exists
+ */
+const createKeys = (options?: KeyOptions): Promise<BiometricKey> => {
+  const { keyName = 'default' } = options ?? {};
+
+  return SimpleBiometrics.createKeys(keyName);
+};
+
+/**
+ * check if a biometric protected key pair exists
+ */
+const biometricKeysExist = (options?: KeyOptions): Promise<boolean> => {
+  const { keyName = 'default' } = options ?? {};
+
+  return SimpleBiometrics.biometricKeysExist(keyName);
+};
+
+/**
+ * delete a biometric protected key pair
+ */
+const deleteKeys = (options?: KeyOptions): Promise<boolean> => {
+  const { keyName = 'default' } = options ?? {};
+
+  return SimpleBiometrics.deleteKeys(keyName);
+};
+
+/**
+ * sign a payload using a biometric protected key pair
+ *
+ * note: promise will resolve with the signature and public key
+ * but will be rejected when authentication fails or is cancelled
+ */
+const createSignature = (
+  /** payload to sign */
+  payload: string,
+  options?: SigningOptions
+): Promise<Signature> => {
+  if (typeof payload !== 'string' || !payload) {
+    throw new Error('payload must be a non empty string');
+  }
+
+  const { keyName = 'default', promptMessage = 'Authenticate to sign' } =
+    options ?? {};
+
+  return SimpleBiometrics.createSignature(keyName, payload, promptMessage);
+};
+
 const RNBiometrics = {
   requestBioAuth,
   canAuthenticate,
+  createKeys,
+  biometricKeysExist,
+  deleteKeys,
+  createSignature,
 };
 
 export default RNBiometrics;

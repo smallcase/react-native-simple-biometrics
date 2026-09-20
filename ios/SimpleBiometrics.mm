@@ -1,5 +1,6 @@
 #import "SimpleBiometrics.h"
 #import <LocalAuthentication/LocalAuthentication.h>
+#import <Security/Security.h>
 
 @implementation SimpleBiometrics
 
@@ -89,6 +90,202 @@
     // This is useful for cleanup tasks, like closing files or releasing resources.
   }
   
+}
+
+- (void)createKeys:(nonnull NSString *)keyName resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+  @try {
+    NSData *tag = [keyName dataUsingEncoding:NSUTF8StringEncoding];
+    
+    NSDictionary *query = @{
+      (id)kSecClass: (id)kSecClassKey,
+      (id)kSecAttrApplicationTag: tag,
+      (id)kSecAttrKeyType: (id)kSecAttrKeyTypeRSA,
+      (id)kSecReturnRef: @YES,
+    };
+    
+    CFTypeRef existing = NULL;
+    OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)query, &existing);
+    if (status == errSecSuccess) {
+      if (existing) {
+        CFRelease(existing);
+      }
+      reject(@"biometric_error", @"key already exists", nil);
+      return;
+    }
+    
+    SecAccessControlRef access = SecAccessControlCreateWithFlags(
+      kCFAllocatorDefault,
+      kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
+      kSecAccessControlBiometryCurrentSet | kSecAccessControlPrivateKeyUsage,
+      NULL
+    );
+    
+    if (!access) {
+      reject(@"biometric_error", @"failed to create access control", nil);
+      return;
+    }
+    
+    NSDictionary *attributes = @{
+      (id)kSecAttrKeyType: (id)kSecAttrKeyTypeRSA,
+      (id)kSecAttrKeySizeInBits: @2048,
+      (id)kSecAttrTokenID: (id)kSecAttrTokenIDSecureEnclave,
+      (id)kSecPrivateKeyAttrs: @{
+        (id)kSecAttrIsPermanent: @YES,
+        (id)kSecAttrApplicationTag: tag,
+        (id)kSecAttrAccessControl: (__bridge id)access,
+      },
+    };
+    
+    CFErrorRef error = NULL;
+    SecKeyRef privateKey = SecKeyCreateRandomKey((__bridge CFDictionaryRef)attributes, &error);
+    CFRelease(access);
+    
+    if (!privateKey) {
+      NSString *message = error
+        ? (__bridge_transfer NSString *)CFErrorCopyDescription(error)
+        : @"failed to generate key";
+      if (error) {
+        CFRelease(error);
+      }
+      reject(@"biometric_error", message, nil);
+      return;
+    }
+    
+    SecKeyRef publicKey = SecKeyCopyPublicKey(privateKey);
+    CFRelease(privateKey);
+    
+    CFDataRef publicKeyData = SecKeyCopyExternalRepresentation(publicKey, &error);
+    CFRelease(publicKey);
+    
+    if (!publicKeyData) {
+      if (error) {
+        CFRelease(error);
+      }
+      reject(@"biometric_error", @"failed to export public key", nil);
+      return;
+    }
+    
+    NSString *publicKeyBase64 = [(__bridge NSData *)publicKeyData base64EncodedStringWithOptions:0];
+    CFRelease(publicKeyData);
+    
+    resolve(@{
+      @"keyName": keyName,
+      @"publicKey": publicKeyBase64,
+      @"algorithm": @"RSA",
+    });
+  }
+  @catch (NSException *exception) {
+    reject(@"biometric_error", exception.reason ?: @"failed to create key", nil);
+  }
+}
+
+- (void)biometricKeysExist:(nonnull NSString *)keyName resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+  NSData *tag = [keyName dataUsingEncoding:NSUTF8StringEncoding];
+  
+  NSDictionary *query = @{
+    (id)kSecClass: (id)kSecClassKey,
+    (id)kSecAttrApplicationTag: tag,
+    (id)kSecAttrKeyType: (id)kSecAttrKeyTypeRSA,
+  };
+  
+  OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)query, NULL);
+  resolve(@(status == errSecSuccess));
+}
+
+- (void)deleteKeys:(nonnull NSString *)keyName resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+  NSData *tag = [keyName dataUsingEncoding:NSUTF8StringEncoding];
+  
+  NSDictionary *query = @{
+    (id)kSecClass: (id)kSecClassKey,
+    (id)kSecAttrApplicationTag: tag,
+    (id)kSecAttrKeyType: (id)kSecAttrKeyTypeRSA,
+  };
+  
+  OSStatus status = SecItemDelete((__bridge CFDictionaryRef)query);
+  
+  if (status == errSecSuccess) {
+    resolve(@(YES));
+  } else if (status == errSecItemNotFound) {
+    resolve(@(NO));
+  } else {
+    reject(@"biometric_error", [NSString stringWithFormat:@"failed to delete key: %d", (int)status], nil);
+  }
+}
+
+- (void)createSignature:(nonnull NSString *)keyName payload:(nonnull NSString *)payload promptMessage:(nonnull NSString *)promptMessage resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+  @try {
+    NSData *tag = [keyName dataUsingEncoding:NSUTF8StringEncoding];
+    
+    LAContext *context = [[LAContext alloc] init];
+    context.localizedReason = promptMessage;
+    
+    NSDictionary *query = @{
+      (id)kSecClass: (id)kSecClassKey,
+      (id)kSecAttrApplicationTag: tag,
+      (id)kSecAttrKeyType: (id)kSecAttrKeyTypeRSA,
+      (id)kSecReturnRef: @YES,
+      (id)kSecUseAuthenticationContext: context,
+    };
+    
+    CFTypeRef keyRef = NULL;
+    OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)query, &keyRef);
+    if (status != errSecSuccess || !keyRef) {
+      if (keyRef) {
+        CFRelease(keyRef);
+      }
+      reject(@"biometric_error", @"key does not exist", nil);
+      return;
+    }
+    
+    SecKeyRef privateKey = (SecKeyRef)keyRef;
+    
+    SecKeyRef publicKey = SecKeyCopyPublicKey(privateKey);
+    CFDataRef publicKeyData = SecKeyCopyExternalRepresentation(publicKey, NULL);
+    CFRelease(publicKey);
+    
+    if (!publicKeyData) {
+      CFRelease(privateKey);
+      reject(@"biometric_error", @"failed to export public key", nil);
+      return;
+    }
+    
+    NSString *publicKeyBase64 = [(__bridge NSData *)publicKeyData base64EncodedStringWithOptions:0];
+    CFRelease(publicKeyData);
+    
+    NSData *data = [payload dataUsingEncoding:NSUTF8StringEncoding];
+    
+    CFErrorRef error = NULL;
+    CFDataRef signatureData = SecKeyCreateSignature(
+      privateKey,
+      kSecKeyAlgorithmRSASignatureMessagePKCS1v15SHA256,
+      (__bridge CFDataRef)data,
+      &error
+    );
+    CFRelease(privateKey);
+    
+    if (!signatureData) {
+      NSString *message = error
+        ? (__bridge_transfer NSString *)CFErrorCopyDescription(error)
+        : @"failed to create signature";
+      if (error) {
+        CFRelease(error);
+      }
+      reject(@"biometric_error", message, nil);
+      return;
+    }
+    
+    NSString *signatureBase64 = [(__bridge NSData *)signatureData base64EncodedStringWithOptions:0];
+    CFRelease(signatureData);
+    
+    resolve(@{
+      @"keyName": keyName,
+      @"publicKey": publicKeyBase64,
+      @"signature": signatureBase64,
+    });
+  }
+  @catch (NSException *exception) {
+    reject(@"biometric_error", exception.reason ?: @"failed to create signature", nil);
+  }
 }
 
 @end
