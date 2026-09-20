@@ -16,11 +16,8 @@ Pod::Spec.new do |s|
   s.source_files = "ios/**/*.{h,m,mm,cpp}"
   s.private_header_files = "ios/**/*.h"
 
-  # Required to use "LocalAuthentication.h"
-  s.framework = 'LocalAuthentication'
-
-  # Required for key generation and signatures
-  s.framework = 'Security'
+  # Required for authentication, key generation, and signatures
+  s.frameworks = 'LocalAuthentication', 'Security'
 
 
   install_modules_dependencies(s)

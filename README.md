@@ -108,7 +108,7 @@ if (can) {
 
 ## Key Generation & Signatures
 
-In addition to simple authentication, the library can generate a biometric-protected key pair and sign payloads with it. The private key is stored in secure hardware (iOS Secure Enclave / Android Keystore) and can only be used after the user passes biometric authentication.
+In addition to simple authentication, the library can generate a biometric-protected key pair and sign payloads with it. The private key is stored in the iOS Secure Enclave or Android Keystore and can only be used after the user passes biometric authentication.
 
 | Method | Description |
 | --- | --- |
@@ -117,13 +117,17 @@ In addition to simple authentication, the library can generate a biometric-prote
 | `deleteKeys(options?)` | Deletes a key pair. Resolves `true` if a key was deleted, `false` otherwise. |
 | `createSignature(payload, options?)` | Signs a UTF-8 string payload with the private key, prompting for biometric authentication. |
 
+### Algorithms and server verification
+
+Both platforms return Base64-encoded DER SubjectPublicKeyInfo (SPKI) public keys and hash the UTF-8 payload with SHA-256. iOS uses Secure Enclave P-256 keys and ECDSA signatures encoded as an ASN.1 DER sequence of `r` and `s`. Android uses RSA-2048 with PKCS#1 v1.5 signatures. Select the verification algorithm from the registered public key; signatures are not interchangeable between algorithms. Android hardware backing depends on the device.
+
 ### `createKeys(options?)`
 
 Returns a `Promise<BiometricKey>` that resolves to:
 
 - `keyName` (string): The identifier for this key pair.
 - `publicKey` (string): Base64-encoded public key (X.509/SPKI).
-- `algorithm` (string): The key algorithm (currently `"RSA"`).
+- `algorithm` (string): The key algorithm: `"EC"` (P-256) on iOS or `"RSA"` (2048-bit) on Android.
 
 Parameters:
 
