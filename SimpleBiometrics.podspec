@@ -19,6 +19,9 @@ Pod::Spec.new do |s|
   # Required to use "LocalAuthentication.h"
   s.framework = 'LocalAuthentication'
 
+  # Required for key generation and signatures
+  s.framework = 'Security'
+
 
   install_modules_dependencies(s)
 end

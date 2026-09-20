@@ -106,6 +106,65 @@ if (can) {
 }
 ```
 
+## Key Generation & Signatures
+
+In addition to simple authentication, the library can generate a biometric-protected key pair and sign payloads with it. The private key is stored in secure hardware (iOS Secure Enclave / Android Keystore) and can only be used after the user passes biometric authentication.
+
+| Method | Description |
+| --- | --- |
+| `createKeys(options?)` | Generates a new key pair. Rejects if a key with the given name already exists. |
+| `biometricKeysExist(options?)` | Checks whether a key pair exists. |
+| `deleteKeys(options?)` | Deletes a key pair. Resolves `true` if a key was deleted, `false` otherwise. |
+| `createSignature(payload, options?)` | Signs a UTF-8 string payload with the private key, prompting for biometric authentication. |
+
+### `createKeys(options?)`
+
+Returns a `Promise<BiometricKey>` that resolves to:
+
+- `keyName` (string): The identifier for this key pair.
+- `publicKey` (string): Base64-encoded public key (X.509/SPKI).
+- `algorithm` (string): The key algorithm (currently `"RSA"`).
+
+Parameters:
+
+- `options` (optional): An object containing configuration options
+  - `keyName` (string, default: `"default"`): Identifier for the key pair. Use a distinct name to hold multiple keys for different purposes.
+
+### `createSignature(payload, options?)`
+
+Returns a `Promise<Signature>` that resolves to:
+
+- `keyName` (string): The identifier for the key pair used to sign.
+- `publicKey` (string): Base64-encoded public key, for verifying the signature.
+- `signature` (string): Base64-encoded signature over the payload.
+
+Required Parameters:
+
+- `payload` (string): The UTF-8 string to sign. The payload is hashed (SHA-256) internally.
+
+Optional Parameters:
+
+- `options` (object, optional): Configuration options
+  - `keyName` (string, default: `"default"`): Identifier for the key pair used to sign.
+  - `promptMessage` (string, default: `"Authenticate to sign"`): Reason shown in the biometric prompt.
+
+```javascript
+import RNBiometrics from 'react-native-simple-biometrics';
+
+// Generate a biometric-protected key pair
+const { publicKey } = await RNBiometrics.createKeys();
+
+// Sign a payload (prompts for biometric authentication)
+const { signature } = await RNBiometrics.createSignature('nonce-123', {
+  promptMessage: 'Sign in to your account',
+});
+
+// Verify on your server using the public key and signature
+
+// Clean up when no longer needed
+await RNBiometrics.deleteKeys();
+```
+
 ## Contributing
 
 - [Development workflow](CONTRIBUTING.md#development-workflow)
@@ -114,6 +173,6 @@ if (can) {
 
 ## Credits
 
-React Native Simple Biometrics is a simplified version of [react-native-biometrics](https://www.npmjs.com/package/react-native-biometrics). If you require advanced features such as key generation, signatures, and more, consider using react-native-biometrics.
+React Native Simple Biometrics is a simplified version of [react-native-biometrics](https://www.npmjs.com/package/react-native-biometrics).
 
 Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
