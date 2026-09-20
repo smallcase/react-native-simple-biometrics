@@ -87,11 +87,17 @@ class SimpleBiometricsModule(reactContext: ReactApplicationContext) :
           )
 
           val authenticators = getAllowedAuthenticators(allowDeviceCredentials)
-          val promptInfo: BiometricPrompt.PromptInfo = BiometricPrompt.PromptInfo.Builder()
+          val promptInfoBuilder = BiometricPrompt.PromptInfo.Builder()
             .setAllowedAuthenticators(authenticators)
             .setTitle(promptTitle ?: "")
             .setSubtitle(promptMessage)
-            .build()
+
+          // A negative button is required when device credentials are not allowed.
+          if (!allowDeviceCredentials) {
+            promptInfoBuilder.setNegativeButtonText("Cancel")
+          }
+
+          val promptInfo: BiometricPrompt.PromptInfo = promptInfoBuilder.build()
 
           prompt.authenticate(promptInfo)
         } else {
