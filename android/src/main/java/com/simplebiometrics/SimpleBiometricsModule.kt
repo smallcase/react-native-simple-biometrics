@@ -238,7 +238,8 @@ class SimpleBiometricsModule(reactContext: ReactApplicationContext) :
                 val signed = result.cryptoObject?.signature
                   ?: throw java.lang.Exception("failed to create signature")
 
-                val signatureBytes = signed.sign(data.toByteArray(Charsets.UTF_8))
+                signed.update(data.toByteArray(Charsets.UTF_8))
+                val signatureBytes = signed.sign()
                 val resultMap = Arguments.createMap()
                 resultMap.putString("keyName", name)
                 resultMap.putString(
@@ -266,6 +267,7 @@ class SimpleBiometricsModule(reactContext: ReactApplicationContext) :
           val promptInfo: BiometricPrompt.PromptInfo = BiometricPrompt.PromptInfo.Builder()
             .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG)
             .setTitle(message)
+            .setNegativeButtonText("Cancel")
             .build()
 
           prompt.authenticate(promptInfo, cryptoObject)

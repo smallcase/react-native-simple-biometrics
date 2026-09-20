@@ -64,6 +64,18 @@ yarn typecheck
 yarn lint
 ```
 
+On macOS, validate iOS public-key export and signature interoperability with:
+
+```sh
+sh tests/native/verify-ios-key-encoding.sh
+```
+
+This compiles the production SPKI encoder, generates an ephemeral P-256 key with
+Apple Security, and checks signature verification and tampered-payload rejection
+using Node.js. It requires Xcode command-line tools and Node.js. It does not test
+Secure Enclave storage or biometric prompts; test key creation, signing,
+cancellation, existence checks, and deletion on physical iOS and Android devices.
+
 To fix formatting errors, run the following:
 
 ```sh
