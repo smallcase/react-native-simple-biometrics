@@ -5,6 +5,7 @@ export interface Spec extends TurboModule {
   requestBioAuth(
     promptTitle: string,
     promptMessage: string,
+    cancelLabel: string,
     allowDeviceCredentials: boolean
   ): Promise<boolean>;
 }

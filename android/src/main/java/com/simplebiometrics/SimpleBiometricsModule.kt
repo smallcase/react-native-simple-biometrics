@@ -57,6 +57,7 @@ class SimpleBiometricsModule(reactContext: ReactApplicationContext) :
   override fun requestBioAuth(
     promptTitle: String?,
     promptMessage: String?,
+    cancelLabel: String?,
     allowDeviceCredentials: Boolean,
     promise: Promise?
   ) {
@@ -94,7 +95,7 @@ class SimpleBiometricsModule(reactContext: ReactApplicationContext) :
 
           // A negative button is required when device credentials are not allowed.
           if (!allowDeviceCredentials) {
-            promptInfoBuilder.setNegativeButtonText("Cancel")
+            promptInfoBuilder.setNegativeButtonText(cancelLabel ?: "Cancel")
           }
 
           val promptInfo: BiometricPrompt.PromptInfo = promptInfoBuilder.build()

@@ -62,9 +62,29 @@ Returns a Promise<boolean> that resolves to:
 - true if authentication is possible with the specified options
 - false if authentication is not possible
 
-2. `requestBioAuth(promptTitle: string, promptMessage: string, options?: Options)`: Initiates the biometric authentication process, displaying a user-friendly prompt with the specified title and message. This function can be used for user authentication.
+2. `requestBioAuth(...)`: Initiates the biometric authentication process, displaying a user-friendly prompt with the specified title and message. This function can be used for user authentication.
 
-Required Parameters
+It can be called with a single object (recommended):
+
+```javascript
+await RNBiometrics.requestBioAuth({
+  promptTitle: 'prompt-title',
+  promptMessage: 'prompt-message',
+  cancelLabel: 'Cancel', // optional, Android only, default 'Cancel'
+  allowDeviceCredentials: false, // optional, default true
+});
+```
+
+or with positional arguments (deprecated):
+
+```javascript
+await RNBiometrics.requestBioAuth('prompt-title', 'prompt-message', {
+  cancelLabel: 'Cancel', // optional, Android only, default 'Cancel'
+  allowDeviceCredentials: false, // optional, default true
+});
+```
+
+Parameters
 
 - `promptTitle` (string): The title displayed in the authentication dialog
   Must be a non-empty string
@@ -76,8 +96,8 @@ Required Parameters
 
 Optional Parameters
 
-- `options` (object, optional): Configuration options
-  - `allowDeviceCredentials` (boolean, default: true): Whether to allow device credentials (passcode/password) as a fallback when biometric authentication is not available
+- `allowDeviceCredentials` (boolean, default: true): Whether to allow device credentials (passcode/password) as a fallback when biometric authentication is not available
+- `cancelLabel` (string, default: `'Cancel'`, Android only): Label for the cancel button on the authentication prompt
 
 Return Value
 
