@@ -46,13 +46,16 @@
   }
 }
 
-- (void)requestBioAuth:(nonnull NSString *)promptTitle promptMessage:(nonnull NSString *)promptMessage allowDeviceCredentials:(BOOL)allowDeviceCredentials resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+- (void)requestBioAuth:(nonnull NSString *)promptTitle promptMessage:(nonnull NSString *)promptMessage cancelLabel:(nonnull NSString *)cancelLabel allowDeviceCredentials:(BOOL)allowDeviceCredentials resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
   @try {
     dispatch_async(
                    dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
                    ^{
                      LAContext *context = [[LAContext alloc] init];
                      context.localizedFallbackTitle = nil;
+                     if (cancelLabel.length > 0) {
+                       context.localizedCancelTitle = cancelLabel;
+                     }
                      
                      LAPolicy localAuthPolicy =
                      [self getLocalAuthPolicy:allowDeviceCredentials];
