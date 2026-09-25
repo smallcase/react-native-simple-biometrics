@@ -4,7 +4,7 @@ export type CreateKeysResult = {
   keyName: string;
   /** Base64-encoded DER SubjectPublicKeyInfo (SPKI). */
   publicKey: string;
-  /** EC (P-256) on iOS; RSA (2048-bit) on Android. */
+  /** EC (P-256) on both platforms. */
   algorithm: string;
 };
 
@@ -12,7 +12,7 @@ export type CreateSignatureResult = {
   keyName: string;
   /** Base64-encoded DER SubjectPublicKeyInfo (SPKI). */
   publicKey: string;
-  /** Base64 ECDSA DER (iOS) or RSA PKCS#1 v1.5 (Android), using SHA-256. */
+  /** Base64 ECDSA DER signature using SHA-256 on both platforms. */
   signature: string;
 };
 

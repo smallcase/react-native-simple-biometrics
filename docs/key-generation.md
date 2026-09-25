@@ -21,7 +21,7 @@ type SigningOptions = {
 type BiometricKey = {
   keyName: string;
   publicKey: string;   // base64, X.509/SPKI
-  algorithm: 'EC' | 'RSA'; // P-256 on iOS, RSA-2048 on Android
+  algorithm: 'EC';    // P-256 on both platforms
 };
 
 type Signature = {
@@ -49,7 +49,7 @@ const RNBiometrics = {
 
 ### Algorithm
 
-Payloads are UTF-8 strings hashed with SHA-256 internally. Android uses RSA-2048 with `SHA256withRSA` (PKCS#1 v1.5). iOS uses Secure Enclave P-256 with `ECDSASignatureMessageX962SHA256` (ASN.1 DER signatures). Both platforms export public keys as Base64-encoded DER SPKI; the server chooses verification based on the registered key algorithm. Android keys also get `ENCRYPT`/`DECRYPT` purposes so future encryption support is non-breaking.
+Payloads are UTF-8 strings hashed with SHA-256 internally. Both platforms use P-256 and ASN.1 DER ECDSA signatures: `SHA256withECDSA` on Android and `ECDSASignatureMessageX962SHA256` on iOS. Android private keys are authorized only for signing. Both platforms export public keys as Base64-encoded DER SPKI, with no line breaks in public keys or signatures. Servers must verify against the public key stored during registration; the key returned with a signature is only a convenience for callers.
 
 ## Design notes
 

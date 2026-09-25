@@ -23,7 +23,7 @@ describe('key generation and signatures', () => {
     (SimpleBiometrics.createKeys as jest.Mock).mockResolvedValue({
       keyName: 'default',
       publicKey: 'abc',
-      algorithm: 'RSA',
+      algorithm: 'EC',
     });
 
     await RNBiometrics.createKeys();
@@ -35,7 +35,7 @@ describe('key generation and signatures', () => {
     (SimpleBiometrics.createKeys as jest.Mock).mockResolvedValue({
       keyName: 'signing',
       publicKey: 'abc',
-      algorithm: 'RSA',
+      algorithm: 'EC',
     });
 
     await RNBiometrics.createKeys({ keyName: 'signing' });
