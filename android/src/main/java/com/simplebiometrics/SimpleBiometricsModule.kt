@@ -15,6 +15,7 @@ import com.facebook.react.module.annotations.ReactModule
 import java.security.KeyStore
 import java.security.PrivateKey
 import java.security.Signature
+import java.security.spec.ECGenParameterSpec
 
 
 @ReactModule(name = SimpleBiometricsModule.NAME)
@@ -28,9 +29,8 @@ class SimpleBiometricsModule(reactContext: ReactApplicationContext) :
   companion object {
     const val NAME = "SimpleBiometrics"
     private const val KEYSTORE = "AndroidKeyStore"
-    private const val ALGORITHM = "RSA"
-    private const val SIGNATURE_ALGORITHM = "SHA256withRSA"
-    private const val KEY_SIZE = 2048
+    private const val ALGORITHM = "EC"
+    private const val SIGNATURE_ALGORITHM = "SHA256withECDSA"
   }
 
   private fun getKeyStore(): KeyStore =
@@ -127,19 +127,14 @@ class SimpleBiometricsModule(reactContext: ReactApplicationContext) :
       }
 
       val generator =
-        java.security.KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, KEYSTORE)
+        java.security.KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_EC, KEYSTORE)
 
       val spec = KeyGenParameterSpec.Builder(
         name,
-        KeyProperties.PURPOSE_SIGN or
-          KeyProperties.PURPOSE_VERIFY or
-          KeyProperties.PURPOSE_ENCRYPT or
-          KeyProperties.PURPOSE_DECRYPT
+        KeyProperties.PURPOSE_SIGN
       )
-        .setKeySize(KEY_SIZE)
+        .setAlgorithmParameterSpec(ECGenParameterSpec("secp256r1"))
         .setDigests(KeyProperties.DIGEST_SHA256)
-        .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
-        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
         .setUserAuthenticationRequired(true)
         .setInvalidatedByBiometricEnrollment(true)
         .build()
@@ -148,7 +143,7 @@ class SimpleBiometricsModule(reactContext: ReactApplicationContext) :
       generator.generateKeyPair()
 
       val publicKey = keyStore.getCertificate(name).publicKey
-      val publicKeyBase64 = Base64.encodeToString(publicKey.encoded, Base64.DEFAULT)
+      val publicKeyBase64 = Base64.encodeToString(publicKey.encoded, Base64.NO_WRAP)
 
       val result = Arguments.createMap()
       result.putString("keyName", name)
@@ -237,11 +232,11 @@ class SimpleBiometricsModule(reactContext: ReactApplicationContext) :
                 resultMap.putString("keyName", name)
                 resultMap.putString(
                   "publicKey",
-                  Base64.encodeToString(publicKey.encoded, Base64.DEFAULT)
+                  Base64.encodeToString(publicKey.encoded, Base64.NO_WRAP)
                 )
                 resultMap.putString(
                   "signature",
-                  Base64.encodeToString(signatureBytes, Base64.DEFAULT)
+                  Base64.encodeToString(signatureBytes, Base64.NO_WRAP)
                 )
 
                 promise!!.resolve(resultMap)
